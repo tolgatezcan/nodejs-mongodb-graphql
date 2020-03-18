@@ -1,69 +1,19 @@
 const express = require('express');
 const ExpressGraphQL  = require('express-graphql');
-const {
-    GraphQLID,
-    GraphQLString,
-    GraphQLList,
-    GraphQLNonNull,
-    GraphQLObjectType,
-    GraphQLSchema
-} = require("graphql");
 const mongosee = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 require('dotenv/config');
-const UserType = require('./models/graphql/Users');
-const Users = require('./models/mongodb/Users');
+const UserSchema = require('./models/graphql/Users');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-const schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
-        name: "Query",
-        fields: {
-            people: {
-                type: GraphQLList(UserType),
-                resolve: (root, args, context, info) => {
-                    return Users.find().exec();
-                }
-            },
-            person: {
-                type: UserType,
-                args: {
-                    id: { type: GraphQLNonNull(GraphQLID) }
-                },
-                resolve: (root, args, context, info) => {
-                    return Users.findById(args.id).exec();
-                }
-            }
-        }
-    }),
-    mutation: new GraphQLObjectType({
-        name: "Mutation",
-        fields: {
-            person: {
-                type: UserType,
-                args: {
-                    email: { type: GraphQLNonNull(GraphQLString) },
-                    password: { type: GraphQLNonNull(GraphQLString) },
-                    creation_date: { type: GraphQLNonNull(GraphQLString) }
-                },
-                resolve: (root, args, context, info) => {
-                    var person = new Users(args);
-                    return person.save();
-                }
-            }
-        }
-    })
-});
-
 //GraphQL
 app.use('/graphql', ExpressGraphQL({
-    schema: schema,
+    schema: UserSchema,
     graphiql: true
 }));
 
