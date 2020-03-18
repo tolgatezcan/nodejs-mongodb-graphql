@@ -4,7 +4,8 @@ const UserSchema = mongosee.Schema({
     email: {
         type: String,
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'],
-        required: [true, 'User mail required']
+        required: [true, 'User mail required'],
+        unique: true
     },
     password: {
         type: String,

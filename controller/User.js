@@ -6,60 +6,105 @@ const bcrypt = require('bcryptjs');
 const Users = require('../models/mongodb/Users');
 const {loginValidation} = require('../models/Validation');
 const {registerValidation} = require('../models/Validation');
+const {updateValidation} = require('../models/Validation');
 
-/*exports.login = async function (req, res, next) {
+exports.login = async function (root, args) {
 
     // Login validate
-    const {error} = loginValidation(req.body);
-    if (error) res.status(400).json({message: error.details[0].message});
+    const {error} = loginValidation(args);
+    if (error) return new Error(error.details[0].message);
     else {
 
         // Email checking
-        const user = await Users.findOne({email: req.body.email});
-        if (!user) res.status(400).json({message: 'Email or password is wrong'});
+        const user = await Users.findOne({email: args.email});
+        if (!user) return new Error('Email or password is wrong.');
         else {
-
             // Validate password
-            const validPass = await bcrypt.compare(req.body.password, user.password);
-            if (!validPass) res.status(400).json({message: 'Email or password is wrong'});
+            const validPass = await bcrypt.compare(args.password, user.password);
+            if (!validPass) return new Error('Email or password is wrong');
             else {
-                const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '30m' });
-                res.status(200).json({id_token: token});
+                const userObject = user.toJSON();
+                const payload = {
+                    id: user._id, 
+                    email: user.email
+                }
+                // JWT creating
+                const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });
+                Object.assign(userObject, {id_user: token});
+                return userObject;
             }
         }
     }
 };
 
-exports.register = async function (req, res, next) {
+exports.register = async function (root, args) {
 
     // Register validate
-    const {error} = registerValidation(req.body);
-    if (error) res.status(400).json({message: error.details[0].message});
+    const {error} = registerValidation(args);
+    if (error) return new Error(error.details[0].message);
     else {
 
-        // Email checking
-        const emailCheck = await Users.findOne({email: req.body.email});
-        if (emailCheck) res.status(400).json({message: 'Email already exists'});
-        else {
-
-            // Hash password
-            const salt = await bcrypt.genSalt(10);
-            const hashPassword = await bcrypt.hash(req.body.password, salt);
-            
-            //Create a new user
-            const post = new User({
-                email: req.body.email,
-                password: hashPassword
-            });
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(args.password, salt);
         
-            try {
-                const user = await post.save();
-                const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: '30m' });
-                res.status(200).json({id_token: token});
+        //Create a new user
+        const post = new Users({
+            email: args.email,
+            password: hashPassword
+        });
+    
+        try {
+            const user = await post.save();
+            const userObject = user.toJSON();
+            const payload = {
+                id: user._id, 
+                email: user.email
             }
-            catch (err) {
-                res.status(400).json(err);
-            }
+            // JWT creating
+            const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });
+            Object.assign(userObject, {id_user: token});
+            return userObject;
+        }
+        catch (err) {
+            if(err.code == 11000) return new Error('Email already exists');
+            else return new Error(err);
         }
     }
-};*/
+};
+
+exports.update = async function (root, args) {
+
+    // Update validate
+    const {error} = updateValidation(args);
+    if (error) return new Error(error.details[0].message);
+    else {
+
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(args.password, salt);
+        
+        //Create a new user
+        const post = new Users({
+            email: args.email,
+            password: hashPassword
+        });
+    
+        try {
+            const user = await post.save();
+            const userObject = user.toJSON();
+            const payload = {
+                id: user._id, 
+                email: user.email
+            }
+            // JWT creating
+            const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });
+            Object.assign(userObject, {id_user: token});
+            return userObject;
+        }
+        catch (err) {
+            if(err.code == 11000) return new Error('Email already exists');
+            else return new Error(err);
+        }
+    }
+};
