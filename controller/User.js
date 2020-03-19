@@ -94,7 +94,7 @@ exports.update = async function (root, args) {
     
         try {
             //Update a user
-            const user = await Users.findOneAndUpdate(filter, update, {upsert: true});
+            const user = await Users.findOneAndUpdate(filter, update);
             const userObject = {
                 _id: args.id,
                 email: args.email
