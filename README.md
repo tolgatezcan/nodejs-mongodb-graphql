@@ -43,3 +43,64 @@ I started this project to provide a simple level of ease of use. I build a compl
 | mongoose                        | MongoDB ODM.                                                          |
 
 ## Query & Mutation
+![](https://raw.githubusercontent.com/tolgatezcan/nodejs-mongodb-graphql/master/public/register.png)
+
+### Login
+```
+{
+    login(email: "aaa@aaa.com", password:"123456") {
+        _id,
+        email,
+        id_user
+    }
+}
+```
+
+### Profile Details
+```
+{
+    person(id: "5e728488371d0928c04f0291") {
+        _id,
+        email,
+        id_user
+    }
+}
+```
+
+### Register
+```
+mutation Register($email: String!, $password: String!) {
+    register(email: $email, password: $password) {
+        _id,
+        email,
+        id_user
+    }
+}
+```
+
+```
+{
+  "email": "aaa@aaa.com",
+  "password": "123456"
+}
+```
+
+### Update
+```
+mutation Update($id: String!, $email: String!, $newpassword: String!, $renewpassword: String!) {
+    update(id: $id, email: $email, newpassword: $newpassword, renewpassword: $renewpassword) {
+        _id,
+        email,
+        id_user
+    }
+}
+```
+
+```
+{
+	"id": "5e72bb248fc1f41720799164",
+	"email": "aaa@aaa.com",
+	"newpassword": "1234567",
+	"renewpassword": "1234567"
+}
+```
