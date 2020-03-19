@@ -20,9 +20,10 @@ const registerValidation = data => {
 
 const updateValidation = data => {
     const schema = joi.object({
+        id: joi.string().required(),
         email: joi.string().min(6).required().email(),
-        password: joi.string().min(6).max(20).required(),
-        newpassword: joi.string().min(6).max(20).required().valid([Joi.ref('password')])
+        newpassword: joi.string().min(6).max(20),
+        renewpassword: joi.string().min(6).max(20).valid(joi.ref('newpassword'))
     });
 
     return schema.validate(data);

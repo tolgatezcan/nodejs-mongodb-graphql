@@ -6,7 +6,6 @@ const {
     GraphQLObjectType,
     GraphQLSchema
 } = require("graphql");
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Users = require('../mongodb/Users');
 const UserController = require('../../controller/User');
@@ -74,10 +73,22 @@ const UserSchema = new GraphQLSchema({
                 type: UserType,
                 args: {
                     email: { type: GraphQLNonNull(GraphQLString) },
-                    password: { type: GraphQLNonNull(GraphQLString) },
+                    password: { type: GraphQLNonNull(GraphQLString) }
                 },
                 resolve: async (root, args, context, info) => {
                     return UserController.register(root, args);
+                }
+            },
+            update: {
+                type: UserType,
+                args: {
+                    id: { type: GraphQLNonNull(GraphQLString) },
+                    email: { type: GraphQLNonNull(GraphQLString) },
+                    newpassword: { type: GraphQLNonNull(GraphQLString) },
+                    renewpassword: { type: GraphQLNonNull(GraphQLString) }
+                },
+                resolve: async (root, args, context, info) => {
+                    return UserController.update(root, args);
                 }
             }
         }

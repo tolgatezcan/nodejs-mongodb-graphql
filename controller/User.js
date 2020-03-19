@@ -1,8 +1,5 @@
 const jwt = require('jsonwebtoken');
-//const moment = require('moment');
 const bcrypt = require('bcryptjs');
-//const crypto = require('crypto');
-//const fs = require('fs');
 const Users = require('../models/mongodb/Users');
 const {loginValidation} = require('../models/Validation');
 const {registerValidation} = require('../models/Validation');
@@ -82,20 +79,29 @@ exports.update = async function (root, args) {
 
         // Hash password
         const salt = await bcrypt.genSalt(10);
-        const hashPassword = await bcrypt.hash(args.password, salt);
+        const hashPassword = await bcrypt.hash(args.newpassword, salt);
         
         //Create a new user
-        const post = new Users({
+        const filter = {
+            _id: args.id
+        };
+
+        const update = {
             email: args.email,
-            password: hashPassword
-        });
+            password: hashPassword,
+            modify_date: Date.now()
+        };
     
         try {
-            const user = await post.save();
-            const userObject = user.toJSON();
+            //Update a user
+            const user = await Users.findOneAndUpdate(filter, update, {upsert: true});
+            const userObject = {
+                _id: args.id,
+                email: args.email
+            };
             const payload = {
-                id: user._id, 
-                email: user.email
+                id: user._id,
+                email: args.email
             }
             // JWT creating
             const token = jwt.sign(payload, process.env.SECRET, { expiresIn: '30m' });

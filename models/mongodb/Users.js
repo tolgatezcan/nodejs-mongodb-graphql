@@ -16,6 +16,10 @@ const UserSchema = mongosee.Schema({
         type: Date,
         default: Date.now
     },
+    modify_date: {
+        type: Date,
+        default: Date.now
+    }
 });
 
 module.exports = mongosee.model('Users', UserSchema);
