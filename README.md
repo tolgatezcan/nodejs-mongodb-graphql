@@ -43,9 +43,9 @@ I started this project to provide a simple level of ease of use. I build a compl
 | mongoose                        | MongoDB ODM.                                                          |
 
 ## Query & Mutation
-![](https://raw.githubusercontent.com/tolgatezcan/nodejs-mongodb-graphql/master/public/register.png)
 
 ### Login
+![](https://raw.githubusercontent.com/tolgatezcan/nodejs-mongodb-graphql/master/public/login.png)
 ```
 {
     login(email: "aaa@aaa.com", password:"123456") {
@@ -57,6 +57,7 @@ I started this project to provide a simple level of ease of use. I build a compl
 ```
 
 ### Profile Details
+![](https://raw.githubusercontent.com/tolgatezcan/nodejs-mongodb-graphql/master/public/detail.png)
 ```
 {
     person(id: "5e728488371d0928c04f0291") {
@@ -68,6 +69,7 @@ I started this project to provide a simple level of ease of use. I build a compl
 ```
 
 ### Register
+![](https://raw.githubusercontent.com/tolgatezcan/nodejs-mongodb-graphql/master/public/register.png)
 ```
 mutation Register($email: String!, $password: String!) {
     register(email: $email, password: $password) {
@@ -86,6 +88,7 @@ mutation Register($email: String!, $password: String!) {
 ```
 
 ### Update
+![](https://raw.githubusercontent.com/tolgatezcan/nodejs-mongodb-graphql/master/public/update.png)
 ```
 mutation Update($id: String!, $email: String!, $newpassword: String!, $renewpassword: String!) {
     update(id: $id, email: $email, newpassword: $newpassword, renewpassword: $renewpassword) {
