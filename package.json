@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-restful",
+  "name": "nodejs-mongodb-graphql",
   "version": "1.0.0",
   "description": "GraphQL API With Node.js And MongoDB",
   "main": "server.js",
